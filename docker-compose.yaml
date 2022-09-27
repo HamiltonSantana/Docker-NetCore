@@ -1,15 +1,18 @@
 services:
   web:
-    image: mcr.microsoft.com/dotnet/sdk:6.0
+    image: mcr.microsoft.com/dotnet/sdk:6.0     
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - '5001:5059'
-      - '44302:443'
+      - '5001:5001'
+      - '7269:7269'
     volumes:
       - './app/src/:/app'
+      - ${APPDATA}/Microsoft/UserSecrets/:/root/.microsoft/usersecrets
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https/
+    
     working_dir: /app
     command: dotnet watch run
-    environment:
-        'ASPNETCORE_ENVIRONMENT': 'Development'
 
     depends_on:
       - db
@@ -20,4 +23,3 @@ services:
       SA_PASSWORD: database_12345
     image: mcr.microsoft.com/mssql/server
     restart: always
-
