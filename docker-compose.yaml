@@ -1,0 +1,23 @@
+services:
+  web:
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    ports:
+      - '5001:5059'
+      - '44302:443'
+    volumes:
+      - './app/src/:/app'
+    working_dir: /app
+    command: dotnet watch run
+    environment:
+        'ASPNETCORE_ENVIRONMENT': 'Development'
+
+    depends_on:
+      - db
+
+  db:
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: database_12345
+    image: mcr.microsoft.com/mssql/server
+    restart: always
+
