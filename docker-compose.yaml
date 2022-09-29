@@ -1,0 +1,56 @@
+services:
+  web:
+    image: mcr.microsoft.com/dotnet/sdk:6.0     
+    container_name: dotnet-core-ef
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - '5001:5001'
+      - '7269:7269'
+    volumes:
+      - './app/src/:/app'
+      - ${APPDATA}/Microsoft/UserSecrets/:/root/.microsoft/usersecrets
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https/
+      #- ./app:/root/.dotnet/tools
+    
+    working_dir: /app
+    command: dotnet watch run
+
+    depends_on:
+      - db
+
+  db:
+    container_name: mssql-server-samplesdb
+    hostname:
+        mssql-samplesdb     
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: database_12345
+      MSSQL_SA_PASSWORD: "PaSSw0rd"
+      MSSQL_PID: "Developer"
+      MSSQL_AGENT_ENABLED: "true"
+      #FORCE_ATTACH_IF_MDF_EXISTS: "${FORCE_ATTACH_IF_MDF_EXISTS}"      
+    image: mcr.microsoft.com/mssql/server
+    restart: always
+    ports:
+        - "1433:1433"
+        - "5301:5301"
+    cpu_count: 4
+    mem_limit: 8Gb
+
+  #      services:
+  #db1:
+    
+  #  build:
+  #    context: .
+  #    dockerfile: Dockerfile
+    
+  #  domainname:
+  #      enriquecatala.com    
+    
+  #  volumes:
+  #    - ${LOCAL_MOUNTPOINT}:/var/opt/mssql/data
+  #    - ${SHARED_FOLDER}:/var/opt/mssql/shared_folder
+  #  ports:
+  #    - "14330:1433"        
+    
