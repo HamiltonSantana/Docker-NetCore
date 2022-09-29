@@ -33,3 +33,8 @@ msbuild.wrn
 # Visual Studio 2015
 .vs/
 app/src/.vs/
+app/src/.vs/*
+app/src/bin/*
+app/src/bin/
+app/src/obj/*
+app/src/obj/
