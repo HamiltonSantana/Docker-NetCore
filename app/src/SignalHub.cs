@@ -10,9 +10,9 @@ namespace ServerSide
             Clients.All.SendAsync("NotificationMessage", message);
         }
 
-        public void SendNotification(string msg)
+        public void SendNotification(User usr)
         {
-            Clients.All.SendAsync("NotificationMessage", msg);
+            Clients.All.SendAsync("SendNotification", usr);
         }
     }
 }

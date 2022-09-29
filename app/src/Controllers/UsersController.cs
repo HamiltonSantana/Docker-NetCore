@@ -24,7 +24,7 @@ namespace ServerSide.Controllers
             using (var context = new ApplicationDbContext())
             {
                 var users = context.Users.Select(_ => _).ToArray();
-                _hubContext.Clients.All.SendAsync("NotificationMessage", users);
+                _hubContext.Clients.All.SendAsync("SendNotification", users);
                 return Ok(users);
             }
         }
@@ -40,9 +40,8 @@ namespace ServerSide.Controllers
                 context.SaveChanges();
                 id = result.Entity.Id;
                 var users = context.Users.Select(_ => _).ToArray();
-                _hubContext.Clients.All.SendAsync("NotificationMessage", users);
             }
-            
+            _hubContext.Clients.All.SendAsync("NotificationMessage", $"Usuario inserido: {usr.Name}, {usr.Phone}");
             return Ok(id);
         }
 
@@ -56,6 +55,7 @@ namespace ServerSide.Controllers
                 context.Users.Remove(result);
                 context.SaveChanges();
             }
+            _hubContext.Clients.All.SendAsync("NotificationMessage", $"Usuario deletado: {usr.Name}, {usr.Phone}");
             return Ok(200);
         }
 
