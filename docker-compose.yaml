@@ -13,10 +13,9 @@ services:
       - './app/src/:/app'
       - ${APPDATA}/Microsoft/UserSecrets/:/root/.microsoft/usersecrets
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https/
-      #- ./app:/root/.dotnet/tools
     
     working_dir: /app
-    command: dotnet watch run
+    command: dotnet run
 
     depends_on:
       - db
@@ -31,7 +30,6 @@ services:
       MSSQL_SA_PASSWORD: "PaSSw0rd"
       MSSQL_PID: "Developer"
       MSSQL_AGENT_ENABLED: "true"
-      #FORCE_ATTACH_IF_MDF_EXISTS: "${FORCE_ATTACH_IF_MDF_EXISTS}"      
     image: mcr.microsoft.com/mssql/server
     restart: always
     ports:
@@ -39,20 +37,3 @@ services:
         - "5301:5301"
     cpu_count: 4
     mem_limit: 8Gb
-
-  #      services:
-  #db1:
-    
-  #  build:
-  #    context: .
-  #    dockerfile: Dockerfile
-    
-  #  domainname:
-  #      enriquecatala.com    
-    
-  #  volumes:
-  #    - ${LOCAL_MOUNTPOINT}:/var/opt/mssql/data
-  #    - ${SHARED_FOLDER}:/var/opt/mssql/shared_folder
-  #  ports:
-  #    - "14330:1433"        
-    
