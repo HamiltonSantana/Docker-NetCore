@@ -2,8 +2,10 @@ services:
   web:
     image: mcr.microsoft.com/dotnet/sdk:6.0     
     container_name: dotnet-core-ef
+    restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1
     ports:
       - '5001:5001'
       - '7269:7269'

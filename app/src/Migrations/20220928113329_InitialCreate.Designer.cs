@@ -11,7 +11,7 @@ using ServerSide.Models;
 
 namespace ServerSide.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(DatabaseContext))]
     [Migration("20220928113329_InitialCreate")]
     partial class InitialCreate
     {

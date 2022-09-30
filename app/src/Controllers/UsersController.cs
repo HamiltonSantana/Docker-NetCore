@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.SignalR;
 using ServerSide.Models;
+using ServerSide.Repository.Interface;
 
 namespace ServerSide.Controllers
 {
@@ -20,14 +21,11 @@ namespace ServerSide.Controllers
 
         [Authorize]
         [HttpGet]
-        public IActionResult GetUsers()
+        public IActionResult GetUsers([FromServices] IUserRepository _userRepository)
         {
-            using (var context = new ApplicationDbContext())
-            {
-                var users = context.Users.Select(_ => _).ToArray();
-                _hubContext.Clients.All.SendAsync("SendNotification", users);
-                return Ok(users);
-            }
+            var users = _userRepository.GetUsers();
+            _hubContext.Clients.All.SendAsync("SendNotification", users);
+            return Ok(users);
         }
 
         [Authorize]
@@ -35,7 +33,7 @@ namespace ServerSide.Controllers
         public IActionResult Post([FromBody] User usr)
         {
             int id = 0;
-            using(var context = new ApplicationDbContext())
+            using(var context = new DatabaseContext())
             {
                 var result = context.Users.Add(usr);
                 context.SaveChanges();
@@ -50,7 +48,7 @@ namespace ServerSide.Controllers
         [HttpDelete]
         public IActionResult Delete([FromBody] int id)
         {
-            using (var context = new ApplicationDbContext())
+            using (var context = new DatabaseContext())
             {   
                 var result = context.Users.Select(_ => _).Where( _ => _.Id == id).Single<User>();
                 context.Users.Remove(result);
@@ -64,7 +62,7 @@ namespace ServerSide.Controllers
         [HttpPut]
         public IActionResult Put([FromBody] User usr)
         {
-            using (var context = new ApplicationDbContext())
+            using (var context = new DatabaseContext())
             {
                 var result = context.Users.Select(_ => _).Where(_ => _.Id == usr.Id).Single<User>();
                 result.Phone = usr.Phone;
