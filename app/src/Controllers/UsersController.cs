@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.SignalR;
 using ServerSide.Models;
 
@@ -47,17 +48,32 @@ namespace ServerSide.Controllers
 
         [Authorize]
         [HttpDelete]
-        public IActionResult Delete([FromBody] User usr)
+        public IActionResult Delete([FromBody] int id)
         {
             using (var context = new ApplicationDbContext())
-            {
-                var result = context.Users.Select(_ => _).Where( _ => _.Id == usr.Id).Single<User>();
+            {   
+                var result = context.Users.Select(_ => _).Where( _ => _.Id == id).Single<User>();
                 context.Users.Remove(result);
                 context.SaveChanges();
+                _hubContext.Clients.All.SendAsync("NotificationMessage", $"Usuario deletado: {result.Name}, {result.Phone}");
             }
-            _hubContext.Clients.All.SendAsync("NotificationMessage", $"Usuario deletado: {usr.Name}, {usr.Phone}");
             return Ok(200);
         }
 
+        [Authorize]
+        [HttpPut]
+        public IActionResult Put([FromBody] User usr)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var result = context.Users.Select(_ => _).Where(_ => _.Id == usr.Id).Single<User>();
+                result.Phone = usr.Phone;
+                result.Pwd = usr.Pwd;
+                context.Users.Update(result);
+                context.SaveChanges();
+            }
+            _hubContext.Clients.All.SendAsync("NotificationMessage", $"Usuario atualizado: {usr.Name}, {usr.Phone}");
+            return Ok(200);
+        }
     }
 }

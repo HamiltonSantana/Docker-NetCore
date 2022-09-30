@@ -45,7 +45,7 @@ builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", _ => _.WithOrigins("http://localhost:4200")
-    .WithMethods("GET", "POST", "DELETE")
+    .WithMethods("GET", "POST", "DELETE", "PUT")
     .AllowAnyHeader()
     .AllowCredentials());
 });
