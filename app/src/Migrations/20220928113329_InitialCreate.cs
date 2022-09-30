@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Reflection.Emit;
 using Microsoft.EntityFrameworkCore.Migrations;
+using ServerSide.Models;
 
 #nullable disable
 
@@ -16,7 +18,7 @@ namespace ServerSide.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(50)", nullable: true),
                     Pwd = table.Column<string>(type: "nvarchar(50)", nullable: false)
                 },
                 constraints: table =>
@@ -24,29 +26,17 @@ namespace ServerSide.Migrations
                     table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Weather",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TemperatureC = table.Column<int>(type: "int", nullable: false),
-                    Summary = table.Column<string>(type: "nvarchar(50)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Weather", x => x.Id);
-                });
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new string[] { "Name", "Phone", "Pwd" },
+                values: new string[] { "admin", "", "root" }
+            );
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "Weather");
         }
     }
 }

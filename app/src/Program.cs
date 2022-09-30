@@ -1,24 +1,23 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using ServerSide;
 using ServerSide.Authentication;
 using ServerSide.Authentication.Interface;
 using ServerSide.Interface;
 using ServerSide.Models;
+using ServerSide.Repository;
+using ServerSide.Repository.Interface;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var configuration = builder.Configuration;
 
-builder.Services.AddDbContext<ApplicationDbContext>();
-var connfiguration = builder.Configuration;
-builder.Services.Configure<AuthSettings>(connfiguration.GetSection(AuthSettings.SectionName));
+builder.Services.AddDbContext<DatabaseContext>();
+
+builder.Services.Configure<AuthSettings>(configuration.GetSection(AuthSettings.SectionName));
 
 builder.Services.AddAuthentication(auth =>
 {
@@ -26,7 +25,7 @@ builder.Services.AddAuthentication(auth =>
     auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(bearer =>
 {
-    var authSettings = connfiguration.GetSection(AuthSettings.SectionName).GetValue<string>("Secret");
+    var authSettings = configuration.GetSection(AuthSettings.SectionName).GetValue<string>("Secret");
     bearer.RequireHttpsMetadata = false;
     bearer.SaveToken = true;
     bearer.TokenValidationParameters = new TokenValidationParameters
@@ -41,11 +40,13 @@ builder.Services.AddAuthentication(auth =>
 
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddSingleton<IConfiguration>(configuration);
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", _ => _.WithOrigins("http://localhost:4200")
-    .WithMethods("GET", "POST", "DELETE")
+    .WithMethods("GET", "POST", "DELETE", "PUT")
     .AllowAnyHeader()
     .AllowCredentials());
 });
@@ -53,21 +54,13 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 
 var app = builder.Build();
 
-using (var context = new ApplicationDbContext())
+using (var context = new DatabaseContext())
 {
     context.Database.Migrate();
-}
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

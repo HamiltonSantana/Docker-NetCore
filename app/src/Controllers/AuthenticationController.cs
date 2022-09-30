@@ -22,5 +22,11 @@ namespace ServerSide.Controllers
 
             return Ok(new {status = 200, token = tokenResult});
         }
+        [Authorize]
+        [HttpGet]
+        public IActionResult CheckAuth()
+        {
+            return Ok();
+        }
     }
 }
