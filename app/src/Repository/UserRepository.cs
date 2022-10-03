@@ -39,7 +39,7 @@ namespace ServerSide.Repository
                     name = name
                 };
 
-                var resul = dbContext.QuerySingle<User>(sql, parameters);
+                var resul = dbContext.QuerySingleOrDefault<User>(sql, parameters);
                 return resul;
             }
         }
