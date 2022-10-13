@@ -14,6 +14,8 @@ public static class InfraDependecy
 {
     public static void ServiceInjection(IServiceCollection service, IConfiguration configuration)
     {
+
+        service.Configure<AuthSettings>(configuration.GetSection(AuthSettings.SectionName));
         service.AddAuthentication(auth =>
         {
             auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -36,6 +38,6 @@ public static class InfraDependecy
         service.AddScoped<IAuthenticationService, AuthenticationService>();
         service.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         service.AddScoped<IUserRepository, UserRepository>();
-        service.AddSignalRCore();
+        service.AddSignalR();
     }
 }

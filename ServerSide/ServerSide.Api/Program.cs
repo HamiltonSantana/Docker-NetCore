@@ -33,8 +33,12 @@ app.UseHttpsRedirection();
 
 app.UseCors("CorsPolicy");
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<SignalHub>("/notification");
 
 app.Run();

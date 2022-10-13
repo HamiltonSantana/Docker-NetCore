@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using ServerSide.Domain.Models;
 
-namespace ServerSide
+namespace ServerSide.Infra
 {
     public class SignalHub : Hub
     {

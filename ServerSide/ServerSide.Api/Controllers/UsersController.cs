@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using ServerSide.Domain.Models;
+using ServerSide.Infra;
 using ServerSide.Infra.Context;
 using ServerSide.Infra.Repository.Interface;
 
