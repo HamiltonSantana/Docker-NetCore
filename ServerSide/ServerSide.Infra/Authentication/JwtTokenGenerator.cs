@@ -29,7 +29,7 @@ namespace ServerSide.Infra.Authentication
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.GivenName, user.Name),
-                new Claim(JwtRegisteredClaimNames.FamilyName, user.Phone),
+                new Claim(JwtRegisteredClaimNames.FamilyName, user.Phone.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 

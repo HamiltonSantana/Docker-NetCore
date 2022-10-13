@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reflection.Emit;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -16,20 +14,14 @@ namespace ServerSide.Infra.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(50)", nullable: true),
-                    Pwd = table.Column<string>(type: "nvarchar(50)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<int>(type: "int", nullable: false),
+                    Pwd = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                 });
-
-            migrationBuilder.InsertData(
-                table: "Users",
-                columns: new string[] { "Name", "Phone", "Pwd" },
-                values: new string[] { "admin", "", "root" }
-            );
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
